@@ -1,0 +1,60 @@
+digraph Classes {
+  graph [rankdir=BT, fontname="DejaVu Sans", nodesep=0.5, ranksep=0.55, dpi=170, pad=0.3];
+  node [shape=plain, fontname="DejaVu Sans", fontsize=10];
+  edge [color="#2F4A6D", fontname="DejaVu Sans"];
+
+  Imovel [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#2F4A6D">
+   <tr><td bgcolor="#2F4A6D"><font color="white"><b>Imovel</b></font></td></tr>
+   <tr><td align="left" bgcolor="#E8EEF6">TIPO, CODIGO, ALUGUEL_BASE</td></tr>
+   <tr><td align="left">calcular_aluguel_base()<br align="left"/>calcular_adicional_quartos()<br align="left"/>calcular_adicional_garagem()<br align="left"/>calcular_subtotal()<br align="left"/>calcular_desconto()<br align="left"/>calcular_aluguel_mensal()<br align="left"/>descrever() / detalhar_itens()<br align="left"/></td></tr></table>>];
+
+  Res [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#2F4A6D">
+   <tr><td bgcolor="#2F4A6D"><font color="white"><b>ImovelResidencial</b></font></td></tr>
+   <tr><td align="left" bgcolor="#E8EEF6">quartos, tem_garagem<br align="left"/>VALOR_GARAGEM = 300<br align="left"/></td></tr>
+   <tr><td align="left">calcular_adicional_quartos()<br align="left"/>calcular_adicional_garagem()<br align="left"/></td></tr></table>>];
+
+  Apto [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#2F4A6D">
+   <tr><td bgcolor="#2F4A6D"><font color="white"><b>Apartamento</b></font></td></tr>
+   <tr><td align="left" bgcolor="#E8EEF6">base 700 | 2º quarto 200<br align="left"/>possui_criancas<br align="left"/></td></tr>
+   <tr><td align="left">calcular_desconto()  (5%)<br align="left"/></td></tr></table>>];
+
+  Casa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#2F4A6D">
+   <tr><td bgcolor="#2F4A6D"><font color="white"><b>Casa</b></font></td></tr>
+   <tr><td align="left" bgcolor="#E8EEF6">base 900 | 2º quarto 250<br align="left"/></td></tr></table>>];
+
+  Est [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#2F4A6D">
+   <tr><td bgcolor="#2F4A6D"><font color="white"><b>Estudio</b></font></td></tr>
+   <tr><td align="left" bgcolor="#E8EEF6">base 1200 | pacote 250 | vaga 60<br align="left"/>contrata_pacote, vagas_adicionais<br align="left"/></td></tr>
+   <tr><td align="left">total_de_vagas()<br align="left"/>calcular_adicional_garagem()<br align="left"/></td></tr></table>>];
+
+  Taxa [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#7A4E12">
+   <tr><td bgcolor="#7A4E12"><font color="white"><b>TaxaContratual</b></font></td></tr>
+   <tr><td align="left" bgcolor="#FFF4D6">VALOR_TOTAL = 2000 | MAX_PARCELAS = 5<br align="left"/>quantidade_parcelas<br align="left"/></td></tr>
+   <tr><td align="left">calcular_parcelas()<br align="left"/>valor_parcela_no_mes(mes)<br align="left"/>descrever()<br align="left"/></td></tr></table>>];
+
+  Orc [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#1E6B3A">
+   <tr><td bgcolor="#1E6B3A"><font color="white"><b>Orcamento</b></font></td></tr>
+   <tr><td align="left" bgcolor="#DDF1E4">imovel, taxa_contratual<br align="left"/>MESES_PROJECAO = 12<br align="left"/></td></tr>
+   <tr><td align="left">calcular_aluguel_mensal()<br align="left"/>gerar_projecao()<br align="left"/>calcular_total_primeiro_ano()<br align="left"/>formatar_resumo()<br align="left"/></td></tr></table>>];
+
+  Exp [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#555555">
+   <tr><td bgcolor="#555555"><font color="white"><b>ExportadorCSV</b></font></td></tr>
+   <tr><td align="left" bgcolor="#EEEEEE">pasta_saida, CABECALHO<br align="left"/></td></tr>
+   <tr><td align="left">gerar_nome_arquivo(orcamento)<br align="left"/>exportar(orcamento)<br align="left"/></td></tr></table>>];
+
+  UI [label=<<table border="1" cellborder="0" cellspacing="0" cellpadding="4" color="#555555">
+   <tr><td bgcolor="#555555"><font color="white"><b>InterfaceTerminal</b></font></td></tr>
+   <tr><td align="left" bgcolor="#EEEEEE">exportador<br align="left"/></td></tr>
+   <tr><td align="left">executar()<br align="left"/>escolher_imovel() / fazer_orcamento()<br align="left"/>ler_inteiro() / ler_sim_nao()<br align="left"/>exibir_tabela_precos()<br align="left"/></td></tr></table>>];
+
+  Apto -> Res [arrowhead=empty, label=" herda", fontsize=9];
+  Casa -> Res [arrowhead=empty, label=" herda", fontsize=9];
+  Res -> Imovel [arrowhead=empty, label=" herda", fontsize=9];
+  Est -> Imovel [arrowhead=empty, label=" herda", fontsize=9];
+  Orc -> Imovel [arrowhead=vee, arrowtail=diamond, dir=both, style=dashed, label=" tem 1", fontsize=9];
+  Orc -> Taxa [arrowhead=vee, arrowtail=diamond, dir=both, style=dashed, label=" tem 1", fontsize=9];
+  Exp -> Orc [arrowhead=vee, style=dotted, label=" usa", fontsize=9];
+  UI -> Orc [arrowhead=vee, style=dotted, label=" cria", fontsize=9];
+  UI -> Exp [arrowhead=vee, style=dotted, label=" usa", fontsize=9];
+  {rank=same; Imovel; Taxa;}
+}

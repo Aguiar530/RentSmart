@@ -1,0 +1,58 @@
+digraph RentSmart {
+  graph [rankdir=TB, fontname="DejaVu Sans", nodesep=0.35, ranksep=0.32, bgcolor="white", pad=0.3, dpi=170];
+  node  [fontname="DejaVu Sans", fontsize=10.5, style=filled, color="#2F4A6D", penwidth=1.3];
+  edge  [fontname="DejaVu Sans", fontsize=9.5, color="#2F4A6D", arrowsize=0.7];
+
+  inicio  [label="Início", shape=oval, fillcolor="#2F4A6D", fontcolor="white"];
+  menu    [label="Exibir menu\n1-Orçamento | 2-Tabela | 0-Sair", shape=parallelogram, fillcolor="#E8EEF6"];
+  opcao   [label="Opção válida?\n(0, 1 ou 2)", shape=diamond, fillcolor="#FFF4D6"];
+  erro0   [label="Mensagem de erro\ne nova pergunta", shape=box, fillcolor="#FBE3E3"];
+  tabela  [label="Exibir tabela\nde preços", shape=box, fillcolor="#E8EEF6"];
+  fim     [label="Fim", shape=oval, fillcolor="#2F4A6D", fontcolor="white"];
+
+  tipo    [label="Ler tipo de imóvel\n(1 Apto | 2 Casa | 3 Estúdio)", shape=parallelogram, fillcolor="#E8EEF6"];
+  qual    [label="Tipo?", shape=diamond, fillcolor="#FFF4D6"];
+
+  quartos [label="Ler quartos (1 ou 2)\nLer garagem (S/N)", shape=parallelogram, fillcolor="#E8EEF6"];
+  eapto   [label="É apartamento?", shape=diamond, fillcolor="#FFF4D6"];
+  criancas[label="Ler: possui crianças? (S/N)", shape=parallelogram, fillcolor="#E8EEF6"];
+  objApto [label="Criar objeto\nApartamento", shape=box, fillcolor="#DDF1E4"];
+  objCasa [label="Criar objeto\nCasa", shape=box, fillcolor="#DDF1E4"];
+
+  pacote  [label="Ler: pacote de 2 vagas? (S/N)", shape=parallelogram, fillcolor="#E8EEF6"];
+  temPac  [label="Contratou\npacote?", shape=diamond, fillcolor="#FFF4D6"];
+  extras  [label="Ler vagas adicionais (≥ 0)", shape=parallelogram, fillcolor="#E8EEF6"];
+  objEst  [label="Criar objeto\nEstudio", shape=box, fillcolor="#DDF1E4"];
+
+  parcelas[label="Ler parcelas da taxa (1 a 5)\nCriar objeto TaxaContratual", shape=parallelogram, fillcolor="#E8EEF6"];
+  calc    [label="Criar Orcamento e calcular:\nbase + adicionais = subtotal\n− desconto 5% (apto sem crianças)\n= aluguel mensal", shape=box, fillcolor="#DDF1E4"];
+  taxa    [label="Dividir R$ 2.000,00 nas parcelas\n(ajuste de centavos na última)", shape=box, fillcolor="#DDF1E4"];
+  proj    [label="Para mês = 1 até 12:\ntotal = aluguel + parcela da taxa do mês", shape=box, fillcolor="#DDF1E4"];
+  exibe   [label="Exibir orçamento detalhado\n(aluguel | taxa à parte | projeção)", shape=parallelogram, fillcolor="#E8EEF6"];
+  csv     [label="Gerar arquivo CSV\ncom os 12 meses", shape=note, fillcolor="#E8EEF6"];
+
+  inicio -> menu -> opcao;
+  opcao -> erro0 [label="não"];
+  erro0 -> menu;
+  opcao -> tipo  [label="1"];
+  opcao -> tabela [label="2"];
+  opcao -> fim [label="0"];
+  tabela -> menu;
+
+  tipo -> qual;
+  qual -> quartos [label="Apto / Casa"];
+  qual -> pacote  [label="Estúdio"];
+  quartos -> eapto;
+  eapto -> criancas [label="sim"];
+  eapto -> objCasa [label="não"];
+  criancas -> objApto;
+
+  pacote -> temPac;
+  temPac -> extras [label="sim"];
+  temPac -> objEst [label="não\n(0 vagas)"];
+  extras -> objEst;
+
+  objApto -> parcelas; objCasa -> parcelas; objEst -> parcelas;
+  parcelas -> calc -> taxa -> proj -> exibe -> csv;
+  csv -> menu [label="volta ao menu", constraint=false, style=dashed];
+}
